@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import './App.css';
-import { searchWordnik, wordnikOperations} from '../../api-models/wordnik-api';
-import { searchOxford, oxfordOperations} from '../../api-models/oxford-api';
+import { searchWordnik, wordnikOperations, renderWordnikList} from '../../api-models/wordnik-api';
+import { searchOxford, oxfordOperations, parseDefinitions, renderResponse} from '../../api-models/oxford-api';
 import SearchForm from '../SearchForm';
 //import SearchTypeSelector from '../SearchTypeSelector';
 import ApiSearchContainer from '../ApiSearchContainer';
@@ -35,7 +35,8 @@ class App extends Component {
         selectedOption: oxfordOptions[1]
       },
       searchTerm: ''
-    };   
+    };
+  
   }
 
   async handleSearchSubmit(searchTerm) {
@@ -50,12 +51,11 @@ class App extends Component {
   }
 
   handleSearchTypeSelectChange(eventTarget){
-    console.log('app registers select option change:', eventTarget.value, 
-    ' on api:', eventTarget.name);
+    //console.log('app registers select option change:', eventTarget.value, ' on api:', eventTarget.name);
     let api = String(eventTarget.name).toLowerCase();
     let value = eventTarget.value;
     if (this.state[api]){
-      this.setState({ [api]: {...this.state[api], selectedOption: value} });      
+      this.setState({ [api]: {...this.state[api], selectedOption: value, response: {data:[]}} });      
     }
   }
 
@@ -91,42 +91,22 @@ class App extends Component {
     )
   }
  */
-  renderPronunciation(response){
-    const list = response.map((item, index) => 
-      <li key={index}><strong>Type: </strong>{item.rawType||'unknown'}, <strong>Pronunciation: </strong>{item.raw||'unknown'}</li>
-    )
-    return (
-      <div>
-        {list.length > 0 && <h4>Pronunciations</h4>}
-        <ul>{list}</ul>
-      </div>
-      
-    )
-  }
-
-  renderAudio(response){
-    const list = response.map((item, index) => 
-      <li key={index}><a type="audio/mpeg" target="frame" href={item.fileUrl||'#'}>{item.attributionText||'attribution unknown'}</a></li>
-    )
-    return (
-      <div>
-        {list.length > 0 && 
-        <Fragment>
-          <h4>Audio</h4>
-          <ul>{list}</ul>
-          <div className="audioFrame">
-            <iframe title="Audio" name="frame" height="180px" width="400px"></iframe>
-          </div>
-        </Fragment>
-        }
-      </div>
-    )
-  }
+  
 
   renderOxford(response){
-    if (response.data.length < 1) return;
     let {oxford} = this.state;
-    const entries = response.data[0].lexicalEntries[0].entries[0] || [];
+    if (response.data.length < 1) return;
+    if (oxford.selectedOption==='definitions' && response.data[0].word){
+      parseDefinitions(response);
+      return renderResponse(response, oxford.selectedOption);
+    }
+    if ((oxford.selectedOption==='synonyms' ||
+          oxford.selectedOption==='antonyms')
+          && response.data[0].word){
+      return renderResponse(response, oxford.selectedOption);
+    }
+    
+    /* const entries = response.data[0].lexicalEntries[0].entries[0] || [];
     console.log('entries =', entries);
     const etymologies = entries.etymologies.map((item, index) =>
       <li key={index}>{item}</li>
@@ -147,28 +127,13 @@ class App extends Component {
           </Fragment>
         }
       </div>
-    )
+    ) */
   }
 
 
   renderWordnik(response){
     let {wordnik} = this.state;
-    const list = response.data.map((item) => 
-      <li key={item.sequence}>
-        <span>{item.partOfSpeech} - </span>
-        <span>{item.text}</span> 
-      </li>
-    );
-    return (
-      <div>
-        {list.length > 0 &&
-          <Fragment>
-            <h4>Wordnik ({wordnik.selectedOption})</h4>
-            <ul>{list}</ul>
-          </Fragment>
-        }
-      </div>
-    )
+    return renderWordnikList(response, wordnik.selectedOption);
   }
 
   render() {
