@@ -1,18 +1,37 @@
+select {
+  width: 110px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+  "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+  sans-serif;
+-webkit-font-smoothing: antialiased;
+-moz-osx-font-smoothing: grayscale;
+}
+
 .Header {
   background-color: bisque;
   padding: 15px;
   display: flex;
   flex-direction: row;
+  align-items: center;
 }
 
 .Search {
+  display: flex;
+  align-items: space-between;
   text-align: left;
   padding: 10px;
 }
 
+.Seach-input {
+  border-radius: 8px;
+}
+
 .Search-items {
-  margin: 5px;
-  padding: 5px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 10px;
+
 }
 
 .Results {
@@ -31,4 +50,5 @@
   border-width: 1px;
   background-color: coral;
   border-radius: 5px;
+  width: 125px;
 }

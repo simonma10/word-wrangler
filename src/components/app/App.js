@@ -1,11 +1,11 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import './App.css';
-import { searchWordnik, wordnikOperations, renderWordnikList} from '../../api-models/wordnik-api';
-import { searchOxford, oxfordOperations, parseDefinitions, renderResponse} from '../../api-models/oxford-api';
+import { searchWordnik, wordnikOperations, renderWordnikList} from '../../api-models/wordnik-api-renderer';
+import { searchOxford, oxfordOperations, renderResponse} from '../../api-models/oxford-api-renderer';
+import { searchAnagramica, anagramicaOperations, renderAnagramicaResult} from '../../api-models/anagramica-api-renderer';
 import SearchForm from '../SearchForm';
-//import SearchTypeSelector from '../SearchTypeSelector';
 import ApiSearchContainer from '../ApiSearchContainer';
-import { isTypeParameter } from 'babel-types';
+
 
 class App extends Component {
 
@@ -13,11 +13,14 @@ class App extends Component {
     super(props);
     this.handleSearchSubmit = this.handleSearchSubmit.bind(this);
     this.handleSearchTypeSelectChange = this.handleSearchTypeSelectChange.bind(this);
+    this.handleEnableToggle = this.handleEnableToggle.bind(this);
 
     let wordnikOptions = [];
     wordnikOperations.forEach((item)=>{wordnikOptions.push(item.op)});
     let oxfordOptions = [];
     oxfordOperations.forEach((item)=>{oxfordOptions.push(item.op)});
+    let anagramicaOptions = [];
+    anagramicaOperations.forEach((item)=>{anagramicaOptions.push(item.op)});
     
     this.state = {
       wordnik:{
@@ -34,6 +37,13 @@ class App extends Component {
         options:oxfordOptions,
         selectedOption: oxfordOptions[1]
       },
+      anagramica:{
+        label: "Anagramica",
+        enabled:true,
+        response:{data:[]},
+        options: anagramicaOptions,
+        selectedOption: anagramicaOptions[1]
+      },
       searchTerm: ''
     };
   
@@ -47,7 +57,9 @@ class App extends Component {
     if(this.state.oxford.enabled){
       this.setState({ oxford: {...this.state.oxford, response: await searchOxford(searchTerm, this.state.oxford.selectedOption)}}); 
     }
-
+    if(this.state.anagramica.enabled){
+      this.setState({ anagramica: {...this.state.anagramica, response: await searchAnagramica(searchTerm, this.state.anagramica.selectedOption)}}); 
+    }
   }
 
   handleSearchTypeSelectChange(eventTarget){
@@ -59,45 +71,25 @@ class App extends Component {
     }
   }
 
-  /* renderResponse(response){
-    //let wordOperationsItem = wordOperations.find((item)=> {return item.op === this.state.selectedOperation})
-    //return wordOperationsItem.render(response);
-    switch(this.state.selectedOperation){
-      case 'definitions':
-        return this.renderDefinitions(response);
-      case 'pronunciations':
-        return this.renderPronunciation(response);
-      case 'audio':
-        return this.renderAudio(response);
-      default:
-        return (
-        <div>
-          <p>Not yet implemented. Check console for raw response details.</p>
-        </div>)
+  handleEnableToggle(eventTarget){
+    console.log('app registers enable toggle on api:', eventTarget);
+    let api = String(eventTarget).toLowerCase();
+    if (this.state[api]){
+      this.setState({ [api]: {...this.state[api], enabled: !this.state[api].enabled, response: {data:[]}} });      
     }
   }
 
-  renderDefinitions(response){
-    if(response === []) { return(<p>Loading...</p>) }
-    const list = response.map((item, index) => 
-      <li key={index}>{item.text}</li>
-    )
-    return (
-      <div>
-        {list.length > 0 && <h4>Definitions</h4>}
-        <ul>{list}</ul>
-      </div>
-      
-    )
-  }
- */
-  
-
+  //TODO: render errors / not found
   renderOxford(response){
     let {oxford} = this.state;
+    if(response.status===404 && response.data.length === 0){
+      return (
+        <div>Oxford: no data found</div>
+      )
+    }
     if (response.data.length < 1) return;
     if (oxford.selectedOption==='definitions' && response.data[0].word){
-      parseDefinitions(response);
+      //parseDefinitions(response);
       return renderResponse(response, oxford.selectedOption);
     }
     if ((oxford.selectedOption==='synonyms' ||
@@ -105,39 +97,26 @@ class App extends Component {
           && response.data[0].word){
       return renderResponse(response, oxford.selectedOption);
     }
-    
-    /* const entries = response.data[0].lexicalEntries[0].entries[0] || [];
-    console.log('entries =', entries);
-    const etymologies = entries.etymologies.map((item, index) =>
-      <li key={index}>{item}</li>
-    )
-    const senses = entries.senses.map((item, index) =>
-      <li key={index}>{item.definitions[0]}</li>
-
-    )
-    return (
-      <div>
-        {etymologies.length > 0 &&
-          <Fragment>
-            <h4>Oxford ({oxford.selectedOption})</h4>
-            <p>Etymologies</p>
-            <ul>{etymologies}</ul>
-            <p>Definitions</p>
-            <ul>{senses}</ul>
-          </Fragment>
-        }
-      </div>
-    ) */
   }
-
 
   renderWordnik(response){
     let {wordnik} = this.state;
+    if(response.status===200 && response.data.length === 0){
+      return (
+        <div>Wordnik: no data found</div>
+      )
+    }
     return renderWordnikList(response, wordnik.selectedOption);
   }
 
+  renderAnagramica(response){
+    let {anagramica} = this.state;
+    console.log(response);
+    return renderAnagramicaResult(response, anagramica.selectedOption);
+  }
+
   render() {
-    let {wordnik, oxford} = this.state;
+    let {wordnik, oxford, anagramica} = this.state;
     return (
       <div>
         <div className="Header">
@@ -145,16 +124,23 @@ class App extends Component {
             label={wordnik.label}
             options={wordnik.options}
             onChange={this.handleSearchTypeSelectChange}
+            onToggle={this.handleEnableToggle}
             selectedOption={wordnik.selectedOption}
           ></ApiSearchContainer>
           <ApiSearchContainer
             label={oxford.label}
             options={oxford.options}
             onChange={this.handleSearchTypeSelectChange}
+            onToggle={this.handleEnableToggle}
             selectedOption={oxford.selectedOption}
           ></ApiSearchContainer>
-
-
+           <ApiSearchContainer
+            label={anagramica.label}
+            options={anagramica.options}
+            onChange={this.handleSearchTypeSelectChange}
+            onToggle={this.handleEnableToggle}
+            selectedOption={anagramica.selectedOption}
+          ></ApiSearchContainer>
 
           <SearchForm onSubmit={this.handleSearchSubmit} />
         </div>
@@ -162,6 +148,7 @@ class App extends Component {
           <h2>{this.state.searchTerm}</h2>
           {this.renderWordnik(wordnik.response)}
           {this.renderOxford(oxford.response)}
+          {this.renderAnagramica(anagramica.response)}
         </div>
       </div>
     );

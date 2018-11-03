@@ -19,9 +19,9 @@ class SearchForm extends Component {
       return (
         <div className="Search">
             <form onSubmit={this.handleSubmit}>
-                <label className="Search-items">
+                <label >
                     {searchText}
-                    <input type="text" ref={this.input} />
+                    <input className="Search-input" type="text" ref={this.input} />
                 </label>
                 <input type="submit" value="Submit" />
             </form>

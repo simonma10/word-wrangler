@@ -62,6 +62,7 @@ function callApi(url, res){
                 console.log('ERROR: response data =', error.response.data);
                 console.warn('STATUS:', error.response.status);
                 console.log('HEADERS:', error.response.headers);
+                //res.send(error.response);
             } else if (error.request) {
                 console.log('ERROR: request =', error.request);
             } else {

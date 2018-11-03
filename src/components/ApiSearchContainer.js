@@ -8,6 +8,7 @@ class ApiSearchContainer extends Component {
         super(props);
 
         this.handleChange = this.handleChange.bind(this);
+        this.handleToggle = this.handleToggle.bind(this);
         this.state = {
             isChecked: true,
             label: props.label,
@@ -16,13 +17,13 @@ class ApiSearchContainer extends Component {
     }
 
     toggleCheckboxChange = () => {
-        //const {handleDisable, label} = this.props;
+        const {onToggle} = this.props;
         this.setState(({ isChecked }) => (
             {
               isChecked: !isChecked,
             }
           ));
-          //handleDisable(label);
+          this.handleToggle(this.state.label);
     }
 
     handleChange(eventTarget){
@@ -30,20 +31,29 @@ class ApiSearchContainer extends Component {
         this.props.onChange(eventTarget)
     }
 
+    handleToggle(eventTarget){
+        this.props.onToggle(eventTarget)
+    }
+
     render(){
         let {label, isChecked, options, selectedOption} = this.state;
         //console.log(options);
         return(
             <div className='ApiSearchContainer'>
-                <label className="Search-items">
+                <div className="Search-items">
+                <label >
                     {label}
-                    <input
+                   
+                </label>
+                <input
+                        display='flex'
                         type="checkbox"
                         value={label}
                         checked={isChecked}
                         onChange={this.toggleCheckboxChange}
                     />
-                </label>
+                </div>
+                
                 <SearchTypeSelector
                      options={options}
                      onChange={this.handleChange}

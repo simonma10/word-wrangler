@@ -36,19 +36,20 @@ function callApi(url, res){
     console.log(url);
     axios.get(url)
         .then(function (response){
+            //console.log('*** response: ', response);
             res.send(response.data);
         })
         .catch(function (error){
             if(error.response){
                 console.log('ERROR: response data =', error.response.data);
                 console.warn('STATUS:', error.response.status);
-                console.log('HEADERS:', error.response.headers);
+                //console.log('HEADERS:', error.response.headers);
             } else if (error.request) {
                 console.log('ERROR: request =', error.request);
             } else {
                 console.log('ERROR:', error.message);
             }
-            console.log('CONFIG:', error.config);
+            //console.log('CONFIG:', error.config);
         })
 }
 

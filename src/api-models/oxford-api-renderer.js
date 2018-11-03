@@ -74,6 +74,7 @@ export function parseDefinitions(response){
 /**
  * Renders the API response
  */
+
 export function renderResponse(response, operation){
   return response.data.map((result, index) => {
     return(
@@ -100,6 +101,7 @@ function getLexicalEntries(lexicalEntries) {
   );
 }
 
+//TODO: get server to download file in binary/octet-stream MIME type, then play audio from server fs
 function getPronunciations(pronunciations){
   return(
     pronunciations.map((pronunciation, index)=>{
@@ -107,8 +109,8 @@ function getPronunciations(pronunciations){
         <div key={index}>
             {pronunciation.audioFile ? 
               <span>
-                Pronunciation{': '} 
-                <a href={pronunciation.audioFile}>
+                Pronunciation{': '}
+                <a type="audio/mpeg" target="oxAudioFrame" href={pronunciation.audioFile}>
                   {pronunciation.phoneticNotation ? pronunciation.phoneticNotation : ''}
                   {': '} 
                   {pronunciation.phoneticSpelling ? pronunciation.phoneticSpelling : ''}
