@@ -46,14 +46,21 @@ export function renderAnagramicaResult(response, selectedOption){
 }
 
 function renderAll(response) {
+    let separator=', ';
     if(response.data.all){
         const list = response.data.all.map((item, index) => 
-        <li key={index}>{item}</li>
+        <span key={index}>
+            {index < response.data.all.length - 1 ? <span>{item}{separator}</span> : <span>{item}</span>}
+        </span>
       )
       return (
         <div>
-          {list.length > 0 && <h4>Anagramica (all)</h4>}
-          <ul>{list}</ul>
+            {list.length > 0 && 
+            <div>
+                <span className="Results-title">Anagramica (all)</span>
+                <p>{list}</p>
+            </div>
+            }
         </div>
         
       )

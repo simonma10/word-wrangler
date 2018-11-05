@@ -70,6 +70,16 @@ export function renderWordnikList(response, selectedOption){
     
 }
 
+function renderTitle(option){
+    return (
+        <span className="Results-title">
+            <span>Wordnik ({option})</span>
+        </span>
+
+    )
+}
+
+
 function renderDefinition(response) {
     const list = response.data.map((item, index) => 
       <li key={index}>
@@ -77,7 +87,7 @@ function renderDefinition(response) {
     )
     return (
       <div>
-        {list.length > 0 && <h4>Wordnik (definitions)</h4>}
+        {list.length > 0 && renderTitle('definitions')}
         <ul>{list}</ul>
       </div>
       
@@ -91,7 +101,8 @@ function renderPronunciation(response){
     )
     return (
       <div>
-        {list.length > 0 && <h4>Wordnik (pronunciations)</h4>}
+        {list.length > 0 && 
+            renderTitle('pronunciation')}
         <ul>{list}</ul>
       </div>
       
@@ -106,7 +117,7 @@ function renderAudio(response){
       <div>
         {list.length > 0 && 
         <Fragment>
-          <h4>Audio</h4>
+            {renderTitle('audio')}
           <ul>{list}</ul>
           <div className="audioFrame">
             <iframe title="Audio" name="frame" height="180px" width="400px"></iframe>
@@ -125,7 +136,7 @@ function renderEtymology(response){
         <div>
             {list.length > 0 && 
             <Fragment>
-            <h4>Etymology</h4>
+            {renderTitle('etymology')}
             <ul>{list}</ul>
             </Fragment>
             }
@@ -145,7 +156,7 @@ function renderExamples(response){
             <div>
                 {list.length > 0 && 
                 <Fragment>
-                <h4>Examples</h4>
+                {renderTitle('examples')}
                 <ul>{list}</ul>
                 </Fragment>
                 }
@@ -166,7 +177,7 @@ function renderHyphenation(response){
       <div>
           {list.length > 0 && 
           <Fragment>
-          <h4>Syllables</h4>
+              {renderTitle('hyphenation')}
           <p>{list}</p>
           </Fragment>
           }
@@ -181,7 +192,7 @@ function renderPhrase(response) {
     )
     return (
       <div>
-        {list.length > 0 && <h4>Wordnik (bi-gram phrases)</h4>}
+        {list.length > 0 && renderTitle('bi-gram phrases')}
         <ul>{list}</ul>
       </div>
       
@@ -200,7 +211,7 @@ function renderRelated(response) {
         )
         return (
         <div>
-            {list.length > 0 && <h4>Wordnik (related words)</h4>}
+            {list.length > 0 && renderTitle('related')}
             <div>{list}</div>
         </div>
         

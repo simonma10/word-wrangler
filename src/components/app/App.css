@@ -13,29 +13,75 @@ select {
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: space-between;
 }
 
-.Search {
+
+.Search-containers {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.Search-container-items {
   display: flex;
   align-items: space-between;
   text-align: left;
   padding: 10px;
+  justify-content: center;
 }
 
-.Seach-input {
-  border-radius: 8px;
+.Search {
+  display: flex;
+  flex-direction: row;
+  align-items: space-between;
+  justify-content: flex-start;
+  text-align: left;
+  padding: 10px;
+}
+
+.Search-input {
+  border-radius: 4px;
+  height: 32px;
+  font-size: 24px;
+  padding: 4px;
+}
+
+
+.Search-submit {
+  margin: 8px;
+  padding: 8px;
+  height: 32px;
+  border-radius: 4px;
+  background-color: coral;
+  color: rgb(141, 40, 3)
 }
 
 .Search-items {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  margin: 10px;
+  margin: 4px;
 
 }
 
 .Results {
   padding: 10px;
+}
+
+.Results-title {
+  font-size: 24px;
+  font-weight: 600;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.Results-source {
+  display: flex;
+  border-radius: 8px;
+  border: 1px dashed grey;
+  margin: 8px;
+  padding: 4px;
 }
 
 .audioFrame {
@@ -46,6 +92,7 @@ select {
 }
 
 .ApiSearchContainer {
+  margin: 2px;
   border-style: groove;
   border-width: 1px;
   background-color: coral;

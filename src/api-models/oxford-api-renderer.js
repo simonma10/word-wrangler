@@ -79,7 +79,7 @@ export function renderResponse(response, operation){
   return response.data.map((result, index) => {
     return(
       <div key={index}>
-        <h4>Oxford ({operation})</h4>
+        <span className="Results-title">Oxford ({operation})</span>
         {/* <p>{result.type}: {result.word}</p> */}
         {getLexicalEntries(result.lexicalEntries)}
       </div>

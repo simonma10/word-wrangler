@@ -15,15 +15,24 @@ class SearchForm extends Component {
       }
 
     render() {
-        let searchText = 'Search: ';
+        let searchText = '';
       return (
         <div className="Search">
             <form onSubmit={this.handleSubmit}>
                 <label >
                     {searchText}
-                    <input className="Search-input" type="text" ref={this.input} />
+                    <input 
+                        className="Search-input"
+                        type="text"
+                        placeholder="search"
+                        ref={this.input}
+                    />
                 </label>
-                <input type="submit" value="Submit" />
+                    <input 
+                        className="Search-submit"
+                        type="submit"
+                        value="Submit Search"
+                    />
             </form>
         </div>
       )

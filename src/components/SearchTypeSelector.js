@@ -28,7 +28,7 @@ class SearchTypeSelector extends Component {
         let state = this.state;
 
         return(
-            <div className="Search">
+            <div className="Search-container-items">
                {/*  <span className="Search-items">Category:</span> */}
 
                 <select
